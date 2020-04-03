@@ -54,6 +54,13 @@ class Vec3 {
           return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
       }
 
+      void write_color(std::ostream &out) {
+          // Write the translated [0,255] value of each color component.
+          out << static_cast<int>(255.999 * e[0]) << ' '
+              << static_cast<int>(255.999 * e[1]) << ' '
+              << static_cast<int>(255.999 * e[2]) << '\n';
+      }
+
   public:
       double e[3];
 };
