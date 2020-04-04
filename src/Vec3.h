@@ -24,6 +24,11 @@ class Vec3 {
       double y() const { return e[1]; }
       double z() const { return e[2]; }
 
+      double r() const { return e[0]; }
+      double g() const { return e[1]; }
+      double b() const { return e[2]; }
+
+
       Vec3 operator-() const { return Vec3(-e[0], -e[1], -e[2]); }
       double operator[](int i) const { return e[i]; }
       double& operator[](int i) { return e[i]; }
@@ -52,13 +57,6 @@ class Vec3 {
 
       double length_squared() const {
           return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
-      }
-
-      void write_color(std::ostream &out) {
-          // Write the translated [0,255] value of each color component.
-          out << static_cast<int>(255.999 * e[0]) << ' '
-              << static_cast<int>(255.999 * e[1]) << ' '
-              << static_cast<int>(255.999 * e[2]) << '\n';
       }
 
   public:
