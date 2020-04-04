@@ -30,8 +30,13 @@ int Raytracer::run(){
 
       // check for collision with objects in scene
       for(auto s: spheres){
-        if (s.hasCollision(ray)){
-          color = Vec3(1.0, 0.0, 0.0);
+        double t = s.hasCollision(ray);
+        if (t > 0){
+          // use surface normals for shading
+          Vec3 N = s.surface_normal(ray, t);
+
+          // color based on normal
+          color = 0.5 * Vec3(N.x()+1, N.y()+1, N.z()+1);
         } else {
           // if no collision : background
           color = background_color(ray);
@@ -45,7 +50,6 @@ int Raytracer::run(){
 }
 
 Vec3 Raytracer::background_color(const Ray& ray){
-  Vec3 unit_direction = unit_vector(ray.direction());
-  auto t = 0.5 * (unit_direction.y() + 1.0);
+  auto t = 0.5 * (ray.unit_direction().y() + 1.0);
   return (1.0 - t)*Vec3(1.0, 1.0, 1.0) + t*Vec3(0.5, 0.7, 1.0);
 }
