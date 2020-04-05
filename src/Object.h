@@ -13,7 +13,14 @@ struct Hit_Record {
   double time;
   Vec3 point;
   Vec3 surface_normal;
+  bool front_face;
   std::shared_ptr<Material> material_ptr;
+
+  inline void set_face_normal(const Ray& ray, const Vec3& outward_normal){
+    // normals in this program are always opp direction of ray
+    front_face = dot(ray.direction(), outward_normal) < 0;
+    surface_normal = front_face ? outward_normal : -outward_normal;
+  }
 };
 
 class Object{
