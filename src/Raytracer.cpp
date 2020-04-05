@@ -8,13 +8,30 @@ Raytracer::Raytracer(){
 
   // build scene
   Vec3 pos(0.0, 0.0, -1.0);
-  Vec3 color(50.0, 50.0, 50.0);
-  auto sphere_ptr = std::make_shared<Sphere>(0.5, pos, color);
+  Vec3 albedo(0.7, 0.3, 0.3);
+  auto lambertian = std::make_shared<Lambertian>(albedo);
+  auto sphere_ptr = std::make_shared<Sphere>(0.5, pos, lambertian);
   objects_list.add(sphere_ptr);
+
   Vec3 pos1(0.0, -100.5, -1.0);
-  Vec3 color1(50.0, 50.0, 50.0);
-  auto sphere_ptr1 = std::make_shared<Sphere>(100.0, pos1, color1);
+  Vec3 albedo2(0.8, 0.8, 0.0);
+  auto lambertian1 = std::make_shared<Lambertian>(albedo2);
+  auto sphere_ptr1 = std::make_shared<Sphere>(100.0, pos1, lambertian1);
   objects_list.add(sphere_ptr1);
+
+  //Metal
+  Vec3 albedo3(0.8, 0.6, 0.2);
+  auto metal = std::make_shared<Metal>(albedo3, 0.1);
+  Vec3 pos3(1.0, 0, -1.0);
+  auto sphere_ptr3 = std::make_shared<Sphere>(0.5, pos3, metal);
+  objects_list.add(sphere_ptr3);
+
+  Vec3 albedo4(0.8, 0.8, 0.8);
+  auto metal2 = std::make_shared<Metal>(albedo4, 0.3);
+  Vec3 pos4(-1.0, 0, -1.0);
+  auto sphere_ptr4 = std::make_shared<Sphere>(0.5, pos4, metal2);
+  objects_list.add(sphere_ptr4);
+
 }
 
 int Raytracer::run(){
@@ -40,22 +57,15 @@ Vec3 Raytracer::ray_color(const Ray& ray, const Object& objects_list, int depth)
   // stop once max depth reached
   if (depth <= 0){ return Vec3(0, 0, 0); }
   // check for collision with objects in scene
-  Vec3 color(0, 0, 0);
   // start at 0.001 rather than 0 to avoid 'shadow acne'
   if ( objects_list.hit(ray, 0.001, infinity, hit_record) ){
-    /* color based on normals
-    Vec3 N = hit_record.surface_normal; color = ( 0.5 * Vec3(N.x()+1, N.y()+1, N.z()+1) ); */
-
-    // TWO DIFFERENT OPTIONS
-    // use random_unit_vector to achieve a cos(angle from normal) distribution
-    // OPTION 1 - true Lambertian Distribution
-    Vec3 target = hit_record.point + hit_record.surface_normal + random_unit_vector();
-
-    // OPTION 2 - intuitive uniform scatter direction for all angles away from hit point
-    // with no dependency on angle from normal
-    // Vec3 target = hit_record.point + random_in_hemisphere(hit_record.surface_normal);
-
-    return 0.5 * ray_color(Ray(hit_record.point, target - hit_record.point), objects_list, depth - 1);
+    Ray scattered;
+    Vec3 attenuation;
+    if (hit_record.material_ptr->scatter(ray, hit_record, attenuation, scattered) ){
+      return attenuation * ray_color(scattered, objects_list, depth - 1);
+    } else {
+      return Vec3(0, 0, 0);
+    }
   } else {
     // if no collision : background
     return background_color(ray);

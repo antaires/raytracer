@@ -10,6 +10,9 @@
 #include "./Object.h"
 #include "./ObjectList.h"
 #include "./Camera.h"
+#include "./Material.h"
+#include "./Metal.h"
+#include "./Lambertian.h"
 #include <memory>
 
 class Raytracer{

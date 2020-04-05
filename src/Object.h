@@ -3,13 +3,17 @@
 
 #include "./Vec3.h"
 #include "./Ray.h"
+#include <memory>
 
 // abstract class for anything a ray can hit
+
+class Material; // alert compiler that material_ptr is to a class
 
 struct Hit_Record {
   double time;
   Vec3 point;
   Vec3 surface_normal;
+  std::shared_ptr<Material> material_ptr;
 };
 
 class Object{

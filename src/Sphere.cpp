@@ -1,6 +1,6 @@
 #include "./Sphere.h"
 
-Sphere::Sphere(double r, Vec3& pos, Vec3& color): radius(r), center(pos), color(color), r2(radius * radius){}
+Sphere::Sphere(double r, Vec3& pos, std::shared_ptr<Material> material_ptr): radius(r), center(pos), r2(radius * radius), material_ptr(material_ptr){}
 
 bool Sphere::hit(const Ray& ray, double tmin, double tmax, Hit_Record& rec) const {
   // number of roots == number of collisions (ie 2 is ray hitting on entrance and exit)
@@ -25,6 +25,7 @@ bool Sphere::hit(const Ray& ray, double tmin, double tmax, Hit_Record& rec) cons
     rec.time = t0;
     rec.point = ray.at(t0);
     rec.surface_normal = unit_vector(rec.point - center);
+    rec.material_ptr = material_ptr;
     return true;
   }
   return false;
