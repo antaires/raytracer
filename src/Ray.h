@@ -21,6 +21,13 @@ class Ray {
         Vec3 at(double t) const {
             return origin_ + (t * direction_);
         }
+
+        bool insideSphere(Vec3 surface_normal){
+          if ( dot(unit_direction_, surface_normal) > 0.0 ){
+            return true;
+          }
+          return false;
+        }
 };
 
 #endif

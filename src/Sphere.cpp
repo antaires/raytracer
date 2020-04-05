@@ -22,9 +22,9 @@ bool Sphere::hit(const Ray& ray, double tmin, double tmax, Hit_Record& rec) cons
     t0 = t1;
   }
   if (t0 < tmax && t0 > tmin){
-    rec.t = t0;
-    rec.p = ray.at(t0);
-    rec.surface_normal = unit_vector(rec.p - center);
+    rec.time = t0;
+    rec.point = ray.at(t0);
+    rec.surface_normal = unit_vector(rec.point - center);
     return true;
   }
   return false;

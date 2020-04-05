@@ -8,11 +8,13 @@
 #include "./Output.h"
 #include "./Sphere.h"
 #include "./Object.h"
+#include "./ObjectList.h"
+#include <memory>
 
 class Raytracer{
 public:
   Output* output;
-  std::vector<Sphere> spheres;
+  ObjectList objects_list;
   ~Raytracer();
   Raytracer();
   int run();

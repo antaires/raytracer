@@ -1,11 +1,14 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include "./Vec3.h"
+#include "./Ray.h"
+
 // abstract class for anything a ray can hit
 
 struct Hit_Record {
-  double t;
-  Vec3 p;
+  double time;
+  Vec3 point;
   Vec3 surface_normal;
 };
 

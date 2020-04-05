@@ -8,8 +8,12 @@ Raytracer::Raytracer(){
   // build scene
   Vec3 pos(0.0, 0.0, -1.0);
   Vec3 color(50.0, 50.0, 50.0);
-  Sphere sphere(0.5, pos, color);
-  spheres.push_back(sphere);
+  auto sphere_ptr = std::make_shared<Sphere>(0.5, pos, color);
+  objects_list.add(sphere_ptr);
+  Vec3 pos1(0.0, -100.5, -1.0);
+  Vec3 color1(50.0, 50.0, 50.0);
+  auto sphere_ptr1 = std::make_shared<Sphere>(100.0, pos1, color1);
+  objects_list.add(sphere_ptr1);
 }
 
 int Raytracer::run(){
@@ -28,24 +32,20 @@ int Raytracer::run(){
       Ray ray(origin, lower_left_corner + u * horizontal + v * vertical);
       Vec3 color;
 
+
       // check for collision with objects in scene
-      for(auto s: spheres){
-        Hit_Record hit_record;
-        double tmin = 0, tmax = 1000;
-        if ( s.hit(ray, tmin, tmax, hit_record) ){
-
-          // use surface normals for shading
-          Vec3 N = hit_record.surface_normal;
-
-          // color based on normal
-          color = 0.5 * Vec3(N.x()+1, N.y()+1, N.z()+1);
-
-
-        } else {
-          // if no collision : background
-          color = background_color(ray);
-        }
+      Hit_Record hit_record;
+      double tmin = 0, tmax = 1000;
+      if ( objects_list.hit(ray, tmin, tmax, hit_record) ){
+        // use surface normals for shading
+        Vec3 N = hit_record.surface_normal;
+        // color based on normal
+        color = 0.5 * Vec3(N.x()+1, N.y()+1, N.z()+1);
+      } else {
+        // if no collision : background
+        color = background_color(ray);
       }
+
 
       output->write_color(color);
     }
