@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 
+// drawing to screen using PPM
 class Output{
 private:
   std::ofstream output;

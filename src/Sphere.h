@@ -12,7 +12,6 @@ private:
   double r2;
   Vec3 center;
   Vec3 color;
-  bool quadratic(const double& a, const double& b, const double& c, double& x0, double& x1) const;
 public:
   Sphere(){}
   Sphere(double r, Vec3& pos, Vec3& color);

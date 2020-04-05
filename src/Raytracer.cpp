@@ -4,6 +4,7 @@ Raytracer::~Raytracer(){}
 
 Raytracer::Raytracer(){
   output = new Output();
+  camera = new Camera();
 
   // build scene
   Vec3 pos(0.0, 0.0, -1.0);
@@ -17,24 +18,17 @@ Raytracer::Raytracer(){
 }
 
 int Raytracer::run(){
-  // drawing to screen using PPM
-  Vec3 origin(0.0, 0.0, 0.0);
-  Vec3 lower_left_corner(-2.0, -1.0, -1.0);
-  Vec3 horizontal(4.0, 0.0, 0.0);
-  Vec3 vertical(0.0, 2.0, 0.0);
 
   for(int j = image_height-1; j >= 0; --j){
     std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
     for(int i = 0; i < image_width; ++i){
-
       auto u = double(i) / image_width;
       auto v = double(j) / image_height;
-      Ray ray(origin, lower_left_corner + u * horizontal + v * vertical);
-      Vec3 color;
-
+      Ray ray = camera->get_ray(u, v);
 
       // check for collision with objects in scene
       Hit_Record hit_record;
+      Vec3 color;
       double tmin = 0, tmax = 1000;
       if ( objects_list.hit(ray, tmin, tmax, hit_record) ){
         // use surface normals for shading

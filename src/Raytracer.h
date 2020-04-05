@@ -9,11 +9,13 @@
 #include "./Sphere.h"
 #include "./Object.h"
 #include "./ObjectList.h"
+#include "./Camera.h"
 #include <memory>
 
 class Raytracer{
 public:
   Output* output;
+  Camera* camera;
   ObjectList objects_list;
   ~Raytracer();
   Raytracer();
