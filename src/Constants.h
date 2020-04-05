@@ -1,8 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#include "./Vec3.h"
-#include "./Ray.h"
 #include <cmath>
 #include <cstdlib>
 #include <limits>

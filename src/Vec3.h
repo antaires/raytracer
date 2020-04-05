@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <cmath>
+#include "./Constants.h"
 
 class Vec3 {
   public:
@@ -100,7 +101,7 @@ inline double dot(const Vec3 &u, const Vec3 &v) {
        + u.e[2] * v.e[2];
 }
 
-inline Vec3 cross(const Vec3 &u, const Vec3 &v) {
+inline static Vec3 cross(const Vec3 &u, const Vec3 &v) {
   return Vec3(u.e[1] * v.e[2] - u.e[2] * v.e[1],
               u.e[2] * v.e[0] - u.e[0] * v.e[2],
               u.e[0] * v.e[1] - u.e[1] * v.e[0]);
@@ -110,5 +111,39 @@ inline Vec3 unit_vector(Vec3 v) {
   return v / v.length();
 }
 
+// vector utility
+inline Vec3 random_vec(){
+  return Vec3(random_double(), random_double(), random_double());
+}
+
+inline Vec3 random_vec(double min, double max){
+  return Vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+}
+
+inline Vec3 random_unit_vector(){
+  auto a = random_double(0, 2 * pi);
+  auto z = random_double(-1, 1);
+  auto r = sqrt(1 - z * z);
+  return Vec3(r * cos(a), r * sin(a), z);
+}
+
+inline Vec3 random_in_unit_sphere(){
+  // a rejection method for finding random point unit square
+  while (true) {
+    auto point = random_vec(-1, 1);
+    if (point.length_squared() >= 1) continue;
+    return point;
+  }
+}
+
+inline Vec3 random_in_hemisphere(const Vec3& normal){
+  Vec3 in_unit_sphere = random_in_unit_sphere();
+  if (dot(in_unit_sphere, normal) > 0.0) {
+    // in same hemisphere as normal
+    return in_unit_sphere;
+  } else {
+    return -in_unit_sphere;
+  }
+}
 
 #endif

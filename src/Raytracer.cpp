@@ -18,36 +18,48 @@ Raytracer::Raytracer(){
 }
 
 int Raytracer::run(){
-
   for(int j = image_height-1; j >= 0; --j){
     std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
     for(int i = 0; i < image_width; ++i){
-
-      // take many samples randomly within each pixel for blur
+      // take average of many samples randomly within each pixel for blur
       Vec3 color(0, 0, 0);
       for (int s = 0; s < samples_per_pixel; ++s){
         auto u = (i + random_double() ) / image_width;
         auto v = (j + random_double() ) / image_height;
         Ray ray = camera->get_ray(u, v);
-
-        // check for collision with objects in scene
-        Hit_Record hit_record;
-        double tmin = 0, tmax = 1000;
-        if ( objects_list.hit(ray, tmin, tmax, hit_record) ){
-          // use surface normals for shading
-          Vec3 N = hit_record.surface_normal;
-          // color based on normal
-          color += ( 0.5 * Vec3(N.x()+1, N.y()+1, N.z()+1) );
-        } else {
-          // if no collision : background
-          color += background_color(ray);
-        }
+        color += ray_color(ray, objects_list, 20);
       }
-
       output->write_color(color, samples_per_pixel);
     }
   }
   return 0;
+}
+
+Vec3 Raytracer::ray_color(const Ray& ray, const Object& objects_list, int depth){
+  Hit_Record hit_record;
+  // stop once max depth reached
+  if (depth <= 0){ return Vec3(0, 0, 0); }
+  // check for collision with objects in scene
+  Vec3 color(0, 0, 0);
+  // start at 0.001 rather than 0 to avoid 'shadow acne'
+  if ( objects_list.hit(ray, 0.001, infinity, hit_record) ){
+    /* color based on normals
+    Vec3 N = hit_record.surface_normal; color = ( 0.5 * Vec3(N.x()+1, N.y()+1, N.z()+1) ); */
+
+    // TWO DIFFERENT OPTIONS
+    // use random_unit_vector to achieve a cos(angle from normal) distribution
+    // OPTION 1 - true Lambertian Distribution
+    Vec3 target = hit_record.point + hit_record.surface_normal + random_unit_vector();
+
+    // OPTION 2 - intuitive uniform scatter direction for all angles away from hit point
+    // with no dependency on angle from normal
+    // Vec3 target = hit_record.point + random_in_hemisphere(hit_record.surface_normal);
+
+    return 0.5 * ray_color(Ray(hit_record.point, target - hit_record.point), objects_list, depth - 1);
+  } else {
+    // if no collision : background
+    return background_color(ray);
+  }
 }
 
 Vec3 Raytracer::background_color(const Ray& ray){

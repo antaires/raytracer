@@ -22,6 +22,7 @@ public:
   int run();
 private:
   Vec3 background_color(const Ray& ray);
+  Vec3 ray_color(const Ray& ray, const Object& object, int depth);
 };
 
 #endif
