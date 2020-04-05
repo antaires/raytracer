@@ -22,26 +22,29 @@ int Raytracer::run(){
   for(int j = image_height-1; j >= 0; --j){
     std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
     for(int i = 0; i < image_width; ++i){
-      auto u = double(i) / image_width;
-      auto v = double(j) / image_height;
-      Ray ray = camera->get_ray(u, v);
 
-      // check for collision with objects in scene
-      Hit_Record hit_record;
-      Vec3 color;
-      double tmin = 0, tmax = 1000;
-      if ( objects_list.hit(ray, tmin, tmax, hit_record) ){
-        // use surface normals for shading
-        Vec3 N = hit_record.surface_normal;
-        // color based on normal
-        color = 0.5 * Vec3(N.x()+1, N.y()+1, N.z()+1);
-      } else {
-        // if no collision : background
-        color = background_color(ray);
+      // take many samples randomly within each pixel for blur
+      Vec3 color(0, 0, 0);
+      for (int s = 0; s < samples_per_pixel; ++s){
+        auto u = (i + random_double() ) / image_width;
+        auto v = (j + random_double() ) / image_height;
+        Ray ray = camera->get_ray(u, v);
+
+        // check for collision with objects in scene
+        Hit_Record hit_record;
+        double tmin = 0, tmax = 1000;
+        if ( objects_list.hit(ray, tmin, tmax, hit_record) ){
+          // use surface normals for shading
+          Vec3 N = hit_record.surface_normal;
+          // color based on normal
+          color += ( 0.5 * Vec3(N.x()+1, N.y()+1, N.z()+1) );
+        } else {
+          // if no collision : background
+          color += background_color(ray);
+        }
       }
 
-
-      output->write_color(color);
+      output->write_color(color, samples_per_pixel);
     }
   }
   return 0;
