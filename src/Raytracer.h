@@ -7,6 +7,7 @@
 #include "./Ray.h"
 #include "./Output.h"
 #include "./Sphere.h"
+#include "./Object.h"
 
 class Raytracer{
 public:

@@ -19,7 +19,7 @@ class Ray {
         Vec3 unit_direction() const { return unit_direction_; }
 
         Vec3 at(double t) const {
-            return origin_ + (t * unit_direction_);
+            return origin_ + (t * direction_);
         }
 };
 
