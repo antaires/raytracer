@@ -21,7 +21,7 @@ Raytracer::Raytracer(){
 
   //Metal
   Vec3 albedo3(0.8, 0.6, 0.2);
-  auto metal = std::make_shared<Metal>(albedo3, 0.0);
+  auto metal = std::make_shared<Metal>(albedo3, 1.0);
   Vec3 pos3(1.0, 0, -1.0);
   auto sphere_ptr3 = std::make_shared<Sphere>(0.5, pos3, metal);
   objects_list.add(sphere_ptr3);
