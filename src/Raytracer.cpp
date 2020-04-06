@@ -21,7 +21,7 @@ Raytracer::Raytracer(){
 
   //Metal
   Vec3 albedo3(0.8, 0.6, 0.2);
-  auto metal = std::make_shared<Metal>(albedo3, 0.1);
+  auto metal = std::make_shared<Metal>(albedo3, 0.0);
   Vec3 pos3(1.0, 0, -1.0);
   auto sphere_ptr3 = std::make_shared<Sphere>(0.5, pos3, metal);
   objects_list.add(sphere_ptr3);
@@ -38,13 +38,15 @@ int Raytracer::run(){
   for(int j = image_height-1; j >= 0; --j){
     std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
     for(int i = 0; i < image_width; ++i){
-      // take average of many samples randomly within each pixel for blur
+      // take average of many samples randomly within each pixel for antialiasing
       Vec3 color(0, 0, 0);
       for (int s = 0; s < samples_per_pixel; ++s){
         auto u = (i + random_double() ) / image_width;
         auto v = (j + random_double() ) / image_height;
+
         Ray ray = camera->get_ray(u, v);
-        color += ray_color(ray, objects_list, 20);
+
+        color += ray_color(ray, objects_list, ray_depth);
       }
       output->write_color(color, samples_per_pixel);
     }
@@ -53,15 +55,13 @@ int Raytracer::run(){
 }
 
 Vec3 Raytracer::ray_color(const Ray& ray, const Object& objects_list, int depth){
-  Hit_Record hit_record;
-  // stop once max depth reached
   if (depth <= 0){ return Vec3(0, 0, 0); }
-  // check for collision with objects in scene
-  // start at 0.001 rather than 0 to avoid 'shadow acne'
+  // check for collision with objects in scene - min at 0.001 rather than 0 to avoid 'shadow acne'
+  Hit_Record hit_record;
   if ( objects_list.hit(ray, 0.001, infinity, hit_record) ){
     Ray scattered;
     Vec3 attenuation;
-    if (hit_record.material_ptr->scatter(ray, hit_record, attenuation, scattered) ){
+    if ( hit_record.material_ptr->scatter(ray, hit_record, attenuation, scattered) ){
       return attenuation * ray_color(scattered, objects_list, depth - 1);
     } else {
       return Vec3(0, 0, 0);
