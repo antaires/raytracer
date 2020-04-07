@@ -13,6 +13,7 @@
 #include "./Material.h"
 #include "./Metal.h"
 #include "./Lambertian.h"
+#include "./Dielectric.h"
 #include <memory>
 
 class Raytracer{

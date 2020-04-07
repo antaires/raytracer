@@ -26,12 +26,10 @@ Raytracer::Raytracer(){
   auto sphere_ptr3 = std::make_shared<Sphere>(0.5, pos3, metal);
   objects_list.add(sphere_ptr3);
 
-  Vec3 albedo4(0.8, 0.8, 0.8);
-  auto metal2 = std::make_shared<Metal>(albedo4, 0.3);
+  auto glass = std::make_shared<Dielectric>(1.5);
   Vec3 pos4(-1.0, 0, -1.0);
-  auto sphere_ptr4 = std::make_shared<Sphere>(0.5, pos4, metal2);
+  auto sphere_ptr4 = std::make_shared<Sphere>(0.5, pos4, glass);
   objects_list.add(sphere_ptr4);
-
 }
 
 int Raytracer::run(){
