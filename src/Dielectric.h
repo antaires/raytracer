@@ -40,6 +40,12 @@ public:
     // NOTE: negative radius on sphere gives a hollow bubble, because geometry
     // unaffected but surface normal points inward
   }
+
+  double schlick(double cosine, double ref_idx) const {
+    auto r0 = (1 - ref_idx) / (1 + ref_idx);
+    r0 = r0 * r0;
+    return r0 + (1 - r0) * pow(1 - cosine, 5);
+  }
 };
 
 #endif
