@@ -4,9 +4,16 @@ Raytracer::~Raytracer(){}
 
 Raytracer::Raytracer(){
   output = new Output();
-  camera = new Camera();
 
-  // build scene
+  // camera setup
+  const auto aspect_ratio = double(image_width) / image_height;
+  Vec3 up_direction(0, 1, 0); // level camera
+  Vec3 look_from(-2, 2, 1);
+  Vec3 look_at(0, 0, -1);
+  double field_of_view(30);
+  camera = new Camera(look_from, look_at, up_direction, field_of_view, aspect_ratio);
+
+  // build sscene
   Vec3 pos(0.0, 0.0, -1.0);
   Vec3 albedo(0.7, 0.3, 0.3);
   auto lambertian = std::make_shared<Lambertian>(albedo);
@@ -30,6 +37,7 @@ Raytracer::Raytracer(){
   Vec3 pos4(-1.0, 0, -1.0);
   auto sphere_ptr4 = std::make_shared<Sphere>(0.5, pos4, glass);
   objects_list.add(sphere_ptr4);
+
 }
 
 int Raytracer::run(){
