@@ -10,24 +10,35 @@ public:
   Vec3 lower_left_corner;
   Vec3 horizontal;
   Vec3 vertical;
+  Vec3 u, v, w;
+  double lens_radius;
 
-  Camera(Vec3 look_from, Vec3 look_at, Vec3 view_up, double field_of_view, double aspect_ratio){
+  Camera(Vec3 look_from, Vec3 look_at, Vec3 view_up, double field_of_view, double aspect_ratio, double aperture, double focus_distance){
     origin = look_from;
+    lens_radius = aperture / 2;
+
     // specify in degrees and convert to radians
     auto theta = degrees_to_radians(field_of_view); // top to bottom in degrees
     auto half_height = std::tan(theta / 2);
     auto half_width = aspect_ratio * half_height;
-    Vec3 w = unit_vector(look_from - look_at);
-    Vec3 u = unit_vector( cross(view_up, w) );
-    Vec3 v = cross(w, u);
-    lower_left_corner = origin - half_width * u - half_height * v - w;
-    horizontal = 2 * half_width * u;
-    vertical = 2 * half_height * v;
+    w = unit_vector(look_from - look_at);
+    u = unit_vector( cross(view_up, w) );
+    v = cross(w, u);
+    lower_left_corner = origin
+                      - half_width * focus_distance * u
+                      - half_height * focus_distance * v
+                      - focus_distance * w;
+    horizontal = 2 * half_width * focus_distance * u;
+    vertical = 2 * half_height * focus_distance * v;
   }
 
-  Ray get_ray(double u, double v){
-    Ray ray(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-    return ray;
+  Ray get_ray(double s, double t) {
+      Vec3 rd = lens_radius * random_in_unit_disk();
+      Vec3 offset = u * rd.x() + v * rd.y();
+      return Ray(
+          origin + offset,
+          lower_left_corner + s*horizontal + t*vertical - origin - offset
+      );
   }
 
 };

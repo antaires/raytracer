@@ -8,14 +8,16 @@ Raytracer::Raytracer(){
   // camera setup
   const auto aspect_ratio = double(image_width) / image_height;
   Vec3 up_direction(0, 1, 0); // level camera
-  Vec3 look_from(-2, 2, 1);
+  Vec3 look_from(3, 3, 2);
   Vec3 look_at(0, 0, -1);
-  double field_of_view(30);
-  camera = new Camera(look_from, look_at, up_direction, field_of_view, aspect_ratio);
+  double field_of_view(20);
+  double aperture(2.0);
+  double focus_distance = (look_from - look_at).length();
+  camera = new Camera(look_from, look_at, up_direction, field_of_view, aspect_ratio, aperture, focus_distance);
 
   // build sscene
   Vec3 pos(0.0, 0.0, -1.0);
-  Vec3 albedo(0.7, 0.3, 0.3);
+  Vec3 albedo(0.1, 0.2, 0.5);
   auto lambertian = std::make_shared<Lambertian>(albedo);
   auto sphere_ptr = std::make_shared<Sphere>(0.5, pos, lambertian);
   objects_list.add(sphere_ptr);
@@ -28,14 +30,14 @@ Raytracer::Raytracer(){
 
   //Metal
   Vec3 albedo3(0.8, 0.6, 0.2);
-  auto metal = std::make_shared<Metal>(albedo3, 1.0);
+  auto metal = std::make_shared<Metal>(albedo3, 0.0);
   Vec3 pos3(1.0, 0, -1.0);
   auto sphere_ptr3 = std::make_shared<Sphere>(0.5, pos3, metal);
   objects_list.add(sphere_ptr3);
 
   auto glass = std::make_shared<Dielectric>(1.5);
   Vec3 pos4(-1.0, 0, -1.0);
-  auto sphere_ptr4 = std::make_shared<Sphere>(0.5, pos4, glass);
+  auto sphere_ptr4 = std::make_shared<Sphere>(0.45, pos4, glass);
   objects_list.add(sphere_ptr4);
 
 }

@@ -150,7 +150,6 @@ inline Vec3 reflect(const Vec3& v, const Vec3& n){
   return v - 2 * dot(v, n) * n;
 }
 
-
 inline Vec3 refract(const Vec3& uv, const Vec3& n, double etai_over_etat){
   auto cos_theta = dot(-uv, n);
   Vec3 r_out_parallel = etai_over_etat * (uv + cos_theta * n);
@@ -158,6 +157,13 @@ inline Vec3 refract(const Vec3& uv, const Vec3& n, double etai_over_etat){
   return r_out_parallel + r_out_perpendicular;
 }
 
-
+inline Vec3 random_in_unit_disk(){
+  // used for defocus blur, ie depth of field
+  while(true){
+    auto p = Vec3(random_double(-1, 1), random_double(-1, 1), 0);
+    if(p.length_squared() >= 1) continue;
+    return p;
+  }
+}
 
 #endif
