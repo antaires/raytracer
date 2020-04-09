@@ -10,6 +10,7 @@
 #include "./Object.h"
 #include "./ObjectList.h"
 #include "./Camera.h"
+#include "./Scene.h"
 #include "./Material.h"
 #include "./Metal.h"
 #include "./Lambertian.h"
@@ -20,10 +21,11 @@ class Raytracer{
 public:
   Output* output;
   Camera* camera;
+  Scene* scene;
   ObjectList objects_list;
   ~Raytracer();
   Raytracer();
-  int run();
+  void run();
 private:
   Vec3 background_color(const Ray& ray);
   Vec3 ray_color(const Ray& ray, const Object& object, int depth);
