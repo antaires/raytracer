@@ -19,9 +19,9 @@
 
 class Raytracer{
 public:
-  Output* output;
-  Camera* camera;
-  Scene* scene;
+  Output output;
+  Camera camera;
+  Scene scene;
   ObjectList objects_list;
   ~Raytracer();
   Raytracer();

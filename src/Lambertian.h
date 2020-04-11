@@ -12,7 +12,7 @@ class Lambertian : public Material {
       const Ray& ray_in, const Hit_Record& hit_record, Vec3& attenuation, Ray& scattered
     ) const {
       Vec3 scatter_direction = hit_record.surface_normal + random_unit_vector();
-      scattered = Ray(hit_record.point, scatter_direction);
+      scattered = Ray(hit_record.point, scatter_direction, ray_in.time());
       attenuation = albedo;
       return true;
 

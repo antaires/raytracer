@@ -4,6 +4,7 @@
 #include "./Constants.h"
 #include "./Vec3.h"
 #include "./Sphere.h"
+#include "./MovingSphere.h"
 #include "./Object.h"
 #include "./ObjectList.h"
 #include "./Material.h"
@@ -11,9 +12,10 @@
 #include "./Lambertian.h"
 #include "./Dielectric.h"
 
+
 class Scene{
 public:
-  Scene(){}
+  Scene() = default;
   void buildScene(ObjectList& objects_list){
 
     // scene with random spheres
@@ -40,17 +42,45 @@ public:
       auto sphere_ptr1 = std::make_shared<Sphere>(0.5, pos1, metal1);
       objects_list.add(sphere_ptr1);
     }
-    /*
-    // second ring
-    double arrX2[] = {-1.95, -1.95,  1.95, 1.95};
-    double arrZ2[] = {-1.95,  1.95, -1.95, 1.95};
-    for(int i = 0; i < 4; ++i){
-      Vec3 pos1(arrX2[i],0.4,arrZ2[i]);
-      auto glass = std::make_shared<Dielectric>(1.5);
-      auto sphere_ptr1 = std::make_shared<Sphere>(0.4, pos1, glass);
-      objects_list.add(sphere_ptr1);
-    }*/
 
+    // moving spheres
+    int i = 1;
+    for (int a = -10; a < 10; a++) {
+        for (int b = -10; b < 10; b++) {
+            auto choose_mat = random_double();
+            Vec3 center(a + 0.9*random_double(), 0.2, b + 0.9*random_double());
+            if ((center - Vec3(4, 0.2, 0)).length() > 0.9) {
+                if (choose_mat < 0.8) {
+                    // diffuse
+                    auto albedo = random_vec() * random_vec();
+                    auto lambertian = std::make_shared<Lambertian>(albedo);
+                    Vec3 movementVec(0, random_double(0, 0.5), 0);
+                    auto sphere_ptr = std::make_shared<MovingSphere>(0.2
+                        , center
+                        , center + movementVec
+                        , 0.0, 1.0
+                        , lambertian);
+                    objects_list.add(sphere_ptr);
+
+                } else if (choose_mat < 0.95) {
+                    // metal
+                    auto albedo = random_vec(.5, 1);
+                    auto fuzz = random_double(0, .5);
+                    auto metal = std::make_shared<Metal>(albedo, fuzz);
+                    auto sphere_ptr = std::make_shared<Sphere>(0.2, center, metal);
+                    objects_list.add(sphere_ptr);
+
+                } else {
+                    // glass
+                    auto glass = std::make_shared<Dielectric>(1.5);
+                    auto sphere_ptr = std::make_shared<Sphere>(0.2, center, glass);
+                    objects_list.add(sphere_ptr);
+                }
+            }
+        }
+    }
+
+    /* stationary spheres
     int i = 1;
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
@@ -80,9 +110,9 @@ public:
                 }
             }
         }
-    }
+    }*/
 
-    /*
+    /* TEST SPHERES 3 in a row
     Vec3 pos1(0, 1, 0);
     auto dielectric1 = std::make_shared<Dielectric>(1.5);
     auto sphere_ptr1 = std::make_shared<Sphere>(1.0, pos1, dielectric1);

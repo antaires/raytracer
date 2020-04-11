@@ -3,10 +3,7 @@
 Raytracer::~Raytracer(){}
 
 Raytracer::Raytracer(){
-  output = new Output();
-
-  scene = new Scene();
-  scene->buildScene(objects_list);
+  scene.buildScene(objects_list);
 
   // camera setup
   const auto aspect_ratio = double(image_width) / image_height;
@@ -15,8 +12,8 @@ Raytracer::Raytracer(){
   Vec3 look_at(0, 0.5, 0);
   double field_of_view(40);
   double aperture(0.1);
-  double focus_distance = (look_from - look_at).length();
-  camera = new Camera(look_from, look_at, up_direction, field_of_view, aspect_ratio, aperture, 5.0);
+  double focus_distance = (look_from - look_at).length(); // 5.0
+  camera.set_up(look_from, look_at, up_direction, field_of_view, aspect_ratio, aperture, focus_distance, 0.0, 1.0);
 
 }
 
@@ -30,11 +27,11 @@ void Raytracer::run(){
         auto u = (i + random_double() ) / image_width;
         auto v = (j + random_double() ) / image_height;
 
-        Ray ray = camera->get_ray(u, v);
+        Ray ray = camera.get_ray(u, v);
 
         color += ray_color(ray, objects_list, ray_depth);
       }
-      output->write_color(color, samples_per_pixel);
+      output.write_color(color, samples_per_pixel);
     }
   }
 }

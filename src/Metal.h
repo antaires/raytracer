@@ -13,7 +13,7 @@ class Metal : public Material {
       const Ray& ray_in, const Hit_Record& hit_record, Vec3& attenuation, Ray& scattered
     ) const {
       Vec3 reflected = reflect(unit_vector(ray_in.direction()), hit_record.surface_normal);
-      scattered = Ray(hit_record.point, reflected + fuzz * random_in_unit_sphere());
+      scattered = Ray(hit_record.point, reflected + fuzz * random_in_unit_sphere(), ray_in.time());
       attenuation = albedo;
       return (dot(scattered.direction(), hit_record.surface_normal) > 0);
     }

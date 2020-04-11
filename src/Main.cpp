@@ -4,8 +4,8 @@
 
 int main(int argc, char* args[]){
 
-  Raytracer* raytracer = new Raytracer();
-  raytracer->run();
+  Raytracer raytracer;
+  raytracer.run();
 
   return 0;
 }

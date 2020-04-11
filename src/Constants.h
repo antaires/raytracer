@@ -8,10 +8,10 @@
 #include <random>
 
 //constants
-const int image_width = 200;
-const int image_height = 100;
-const int samples_per_pixel = 100;
-const int ray_depth = 30;
+const int image_width = 600;
+const int image_height = 300;
+const int samples_per_pixel = 30; // 100
+const int ray_depth = 20; //30
 
 const double infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;

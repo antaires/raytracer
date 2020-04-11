@@ -22,19 +22,19 @@ public:
     if (etai_over_etat * sin_theta > 1.0){
       // must reflect
       Vec3 reflected = reflect(unit_direction, hit_record.surface_normal);
-      scattered = Ray(hit_record.point, reflected);
+      scattered = Ray(hit_record.point, reflected, ray_in.time());
       return true;
     }
     // schlick simple version of complex form.
     double reflect_prob = schlick(cos_theta, etai_over_etat);
     if (random_double() < reflect_prob){
       Vec3 reflected = reflect(unit_direction, hit_record.surface_normal);
-      scattered = Ray(hit_record.point, reflected);
+      scattered = Ray(hit_record.point, reflected, ray_in.time());
       return true;
     }
     // refract
     Vec3 refracted = refract(unit_direction, hit_record.surface_normal, etai_over_etat);
-    scattered = Ray(hit_record.point, refracted);
+    scattered = Ray(hit_record.point, refracted, ray_in.time());
     return true;
 
     // NOTE: negative radius on sphere gives a hollow bubble, because geometry

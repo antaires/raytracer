@@ -8,15 +8,17 @@ class Ray {
         Vec3 origin_;
         Vec3 direction_;
         Vec3 unit_direction_;
+        double time_;
 
         Ray() {}
-        Ray(const Vec3& origin, const Vec3& direction)
-            : origin_(origin), direction_(direction), unit_direction_(unit_vector(direction))
+        Ray(const Vec3& origin, const Vec3& direction, double time = 0.0)
+            : origin_(origin), direction_(direction), unit_direction_(unit_vector(direction)), time_(time)
         {}
 
         Vec3 origin() const    { return origin_; }
         Vec3 direction() const { return direction_; }
         Vec3 unit_direction() const { return unit_direction_; }
+        double time() const {return time_;}
 
         Vec3 at(double t) const {
             return origin_ + (t * direction_);
