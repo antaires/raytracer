@@ -18,7 +18,7 @@ public:
     center0(center0), center1(center1), time0(t0), time1(t1), radius(r), material_ptr(mat) {}
 
   virtual bool hit(const Ray& ray, double t_min, double t_max, Hit_Record& rec) const;
-
+  virtual bool bounding_box(double t0, double t1, Aabb& output_box) const;
   Vec3 center(double time) const;
 
 };

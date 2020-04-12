@@ -3,6 +3,7 @@
 
 #include "./Vec3.h"
 #include "./Ray.h"
+#include "./Aabb.h"
 #include <memory>
 
 // abstract class for anything a ray can hit
@@ -26,6 +27,7 @@ struct Hit_Record {
 class Object{
 public:
   virtual bool hit(const Ray& r, double t_min, double t_max, Hit_Record& rec) const = 0;
+  virtual bool bounding_box(double t0, double t1, Aabb& output_box) const = 0;
 };
 
 

@@ -17,6 +17,7 @@ public:
   Sphere(){}
   Sphere(double r, Vec3& pos, std::shared_ptr<Material> material_ptr);
   virtual bool hit(const Ray& ray, double tmin, double tmax, Hit_Record& rec) const;
+  virtual bool bounding_box(double t0, double t1, Aabb& output_box) const;
 };
 
 #endif

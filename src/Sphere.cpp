@@ -2,6 +2,14 @@
 
 Sphere::Sphere(double r, Vec3& pos, std::shared_ptr<Material> material_ptr): radius(r), center(pos), r2(radius * radius), material_ptr(material_ptr){}
 
+bool Sphere::bounding_box(double t0, double t1, Aabb& output_box) const {
+  output_box = Aabb(
+    center - Vec3(radius, radius, radius)
+    , center + Vec3(radius, radius, radius)
+  );
+  return true;
+}
+
 bool Sphere::hit(const Ray& ray, double t_min, double t_max, Hit_Record& rec) const {
   // number of roots == number of collisions (ie 2 is ray hitting on entrance and exit)
   // IF root < 0, intersection happens BEHIND ORIGIN (offscreen)
