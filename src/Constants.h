@@ -8,8 +8,8 @@
 #include <random>
 
 //constants
-const int image_width = 600;
-const int image_height = 300;
+const int image_width = 200;
+const int image_height = 100;
 const int samples_per_pixel = 30; // 100
 const int ray_depth = 20; //30
 

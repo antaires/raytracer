@@ -11,7 +11,9 @@
 #include "./Metal.h"
 #include "./Lambertian.h"
 #include "./Dielectric.h"
-
+#include "./Texture.h"
+#include "./ConstantTexture.h"
+#include "./CheckerTexture.h"
 
 class Scene{
 public:
@@ -21,14 +23,18 @@ public:
     // scene with random spheres
 
     // ground
+    auto checker = std::make_shared<CheckerTexture>(
+      std::make_shared<ConstantTexture>(Vec3(0.2, 0.3, 0.1))
+      , std::make_shared<ConstantTexture>(Vec3(0.9, 0.9, 0.9))
+    );
     Vec3 pos0(0,-1000,0);
-    Vec3 albedo0(0.1, 0.5, 0.8);
-    auto lambertian0 = std::make_shared<Lambertian>(albedo0);
+    //auto albedo0 = std::make_shared<ConstantTexture>(Vec3(0.1, 0.5, 0.8));
+    auto lambertian0 = std::make_shared<Lambertian>(checker);
     auto sphere_ptr0 = std::make_shared<Sphere>(1000, pos0, lambertian0);
     objects_list.add(sphere_ptr0);
     // main ball
     Vec3 pos1(0,1,0);
-    Vec3 albedo1(0.8, 0.5, 0.2);
+    auto albedo1 = std::make_shared<ConstantTexture>(Vec3(0.8, 0.5, 0.2));
     auto metal0 = std::make_shared<Metal>(albedo1, 0.0);
     auto sphere_ptr1 = std::make_shared<Sphere>(1.0, pos1, metal0);
     objects_list.add(sphere_ptr1);
@@ -37,8 +43,8 @@ public:
     double arrZ[] = {-1.25,  1.25, -1.25, 1.25};
     for(int i = 0; i < 4; ++i){
       Vec3 pos1(arrX[i],0.5,arrZ[i]);
-      Vec3 albedo1(random_double(0.5, 1), random_double(0, 0.5), random_double());
-      auto metal1 = std::make_shared<Metal>(albedo1, 0.2);
+      auto albedo = std::make_shared<ConstantTexture>(Vec3(random_double(0.5, 1), random_double(0, 0.5), random_double()));
+      auto metal1 = std::make_shared<Metal>(albedo, 0.2);
       auto sphere_ptr1 = std::make_shared<Sphere>(0.5, pos1, metal1);
       objects_list.add(sphere_ptr1);
     }
@@ -52,7 +58,7 @@ public:
             if ((center - Vec3(4, 0.2, 0)).length() > 0.9) {
                 if (choose_mat < 0.8) {
                     // diffuse
-                    auto albedo = random_vec() * random_vec();
+                    auto albedo = std::make_shared<ConstantTexture>(random_vec() * random_vec());
                     auto lambertian = std::make_shared<Lambertian>(albedo);
                     Vec3 movementVec(0, random_double(0, 0.5), 0);
                     auto sphere_ptr = std::make_shared<MovingSphere>(0.2
@@ -64,7 +70,7 @@ public:
 
                 } else if (choose_mat < 0.95) {
                     // metal
-                    auto albedo = random_vec(.5, 1);
+                    auto albedo = std::make_shared<ConstantTexture>(random_vec(.5, 1));
                     auto fuzz = random_double(0, .5);
                     auto metal = std::make_shared<Metal>(albedo, fuzz);
                     auto sphere_ptr = std::make_shared<Sphere>(0.2, center, metal);

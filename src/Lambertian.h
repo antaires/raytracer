@@ -2,18 +2,20 @@
 #define LAMBERTIAN_H
 
 #include "./Vec3.h"
+#include "./Texture.h"
+#include <memory>
 
 class Lambertian : public Material {
   public:
-    Vec3 albedo;
-    Lambertian(const Vec3& albedo): albedo(albedo) {}
+    std::shared_ptr<Texture> albedo;
+    Lambertian(std::shared_ptr<Texture> albedo): albedo(albedo) {}
 
     virtual bool scatter(
       const Ray& ray_in, const Hit_Record& hit_record, Vec3& attenuation, Ray& scattered
     ) const {
       Vec3 scatter_direction = hit_record.surface_normal + random_unit_vector();
       scattered = Ray(hit_record.point, scatter_direction, ray_in.time());
-      attenuation = albedo;
+      attenuation = albedo->value(hit_record.u, hit_record.v, hit_record.point);
       return true;
 
       /* color based on normals

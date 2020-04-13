@@ -16,6 +16,8 @@ struct Hit_Record {
   Vec3 surface_normal;
   bool front_face;
   std::shared_ptr<Material> material_ptr;
+  double u; // U & V surface coordinates
+  double v;
 
   inline void set_face_normal(const Ray& ray, const Vec3& outward_normal){
     // normals in this program are always opp direction of ray
